@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Spring PetClinic application stack - app server and session cache
+
+Resources:
+  AppServer:
+    Type: AWS::EC2::Instance
+    DeletionPolicy: Retain
+    Properties:
+      InstanceType: t3.medium
+      ImageId: ami-0123456789abcdef0
+      DisableApiTermination: true
+      Tags:
+        - Key: Service
+          Value: spring-petclinic
+        - Key: Environment
+          Value: production
+
+  SessionCache:
+    Type: AWS::ElastiCache::CacheCluster
+    DeletionPolicy: Retain
+    Properties:
+      CacheNodeType: cache.t3.micro
+      Engine: redis
+      NumCacheNodes: 1
+      Tags:
+        - Key: Service
+          Value: spring-petclinic
+
+  PetsDatabase:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Retain
+    Properties:
+      DBInstanceIdentifier: !Sub "${AWS::StackName}-pets"
+      Engine: mysql
+      EngineVersion: "8.0.35"
+      DBInstanceClass: db.t3.medium
+      AllocatedStorage: 50
+      StorageEncrypted: true
+      MasterUsername: petclinic_admin
+      ManageMasterUserPassword: true
+      DeletionProtection: true
+      BackupRetentionPeriod: 14
+      Tags:
+        - Key: Service
+          Value: spring-petclinic
