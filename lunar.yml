@@ -1,0 +1,5 @@
+# Datadog monitoring declaration — read by the datadog-monitoring cataloger
+# (sets datadog/service-name + datadog/dashboard-id for the observability guardrail).
+datadog:
+  service: spring-petclinic
+  dashboard_id: w86-hep-njj
